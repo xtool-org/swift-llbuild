@@ -455,13 +455,14 @@ public:
       }
     };
 
-    spawnProcess(
+    spawnProcessWithHook(
+        getDelegate(),
         delegate ? *delegate : getDelegate(),
         reinterpret_cast<ProcessContext*>(context.job.getDescriptor()),
         spawnedProcesses,
         handle,
         commandLine,
-        posixEnv,
+        std::move(posixEnv),
         attributes,
         std::move(releaseFn),
         std::move(laneCompletionFn)

@@ -16,6 +16,7 @@
 #include "llbuild/Basic/Compiler.h"
 #include "llbuild/Basic/LLVM.h"
 #include "llbuild/Basic/Subprocess.h"
+#include "llbuild/Basic/ProcessExecutionHook.h"
 
 #include <cstdint>
 
@@ -179,7 +180,7 @@ namespace llbuild {
     ///
     /// NOTE: The delegate *MUST* be thread-safe with respect to all calls, which
     /// will arrive concurrently and without any specified thread.
-    class ExecutionQueueDelegate : public ProcessDelegate {
+    class ExecutionQueueDelegate : public ProcessDelegate, public ProcessExecutionDelegate {
       // DO NOT COPY
       ExecutionQueueDelegate(const ExecutionQueueDelegate&)
           LLBUILD_DELETED_FUNCTION;
