@@ -16,6 +16,7 @@
 #include "llbuild/Basic/Compiler.h"
 #include "llbuild/Basic/LLVM.h"
 #include "llbuild/Basic/Subprocess.h"
+#include "llbuild/Basic/ProcessExecutionHook.h"
 #include "llbuild/Core/BuildEngine.h"
 
 #include "llvm/ADT/Optional.h"
@@ -52,7 +53,7 @@ enum class DiscoveredDependencyKind {
 
 bool pathIsPrefixedByPath(std::string path, std::string prefixPath);
   
-class BuildSystemDelegate {
+class BuildSystemDelegate : public basic::ProcessExecutionDelegate {
   // DO NOT COPY
   BuildSystemDelegate(const BuildSystemDelegate&)
     LLBUILD_DELETED_FUNCTION;

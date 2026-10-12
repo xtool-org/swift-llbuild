@@ -262,6 +262,9 @@ struct llb_buildsystem_invocation_t_ {
   llb_quality_of_service_t qos;
 };
   
+struct llb_process_execution_request_t_;
+struct llb_process_execution_result_t_;
+
 /// Delegate structure for callbacks required by the build system.
 typedef struct llb_buildsystem_delegate_t_ {
   /// User context pointer.
@@ -541,6 +544,11 @@ typedef struct llb_buildsystem_delegate_t_ {
                                   llb_cycle_action_t action);
   
   /// @}
+  /// Optional per-build process interception. Return false to spawn normally.
+  /// See process-execution.h for the request, result, and ownership contract.
+  bool (*execute_process)(void* context,
+                          const struct llb_process_execution_request_t_* request,
+                          struct llb_process_execution_result_t_* result);
 } llb_buildsystem_delegate_t;
 
 /// Create a new build system instance.

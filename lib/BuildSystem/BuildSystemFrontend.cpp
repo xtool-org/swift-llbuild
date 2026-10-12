@@ -240,6 +240,12 @@ public:
       BuildSystemFrontendDelegateImpl& delegateImpl)
       : delegateImpl(delegateImpl) { }
   
+  llvm::Optional<ProcessExecutionResult> executeProcess(
+      ArrayRef<StringRef> commandLine, const POSIXEnvironment& environment,
+      ProcessAttributes attributes) override {
+    return getSystem().getDelegate().executeProcess(commandLine, environment, attributes);
+  }
+
   virtual void queueJobStarted(JobDescriptor* command) override {
     static_cast<BuildSystemFrontendDelegate*>(&getSystem().getDelegate())->
       commandJobStarted(reinterpret_cast<Command*>(command));

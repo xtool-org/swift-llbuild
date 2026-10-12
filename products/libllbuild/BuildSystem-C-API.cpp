@@ -27,6 +27,7 @@
 
 #include "BuildKey-C-API-Private.h"
 #include "BuildValue-C-API-Private.h"
+#include "ProcessExecution-C-API-Private.h"
 
 #include "llvm/ADT/Hashing.h"
 #include "llvm/ADT/SmallString.h"
@@ -183,6 +184,14 @@ public:
                                   llb_buildsystem_delegate_t delegate)
       : BuildSystemFrontendDelegate(sourceMgr, "basic", 0),
         cAPIDelegate(delegate) { }
+
+  llvm::Optional<ProcessExecutionResult> executeProcess(
+      ArrayRef<StringRef> commandLine, const POSIXEnvironment& environment,
+      ProcessAttributes attributes) override {
+    return executeProcessWithDelegate(cAPIDelegate.execute_process,
+                                      cAPIDelegate.context, commandLine,
+                                      environment, attributes);
+  }
 
   virtual std::unique_ptr<Tool> lookupTool(StringRef name) override {
     if (!cAPIDelegate.lookup_tool) {

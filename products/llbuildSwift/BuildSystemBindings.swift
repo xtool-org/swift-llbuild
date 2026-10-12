@@ -862,6 +862,12 @@ public protocol FileSystem {
 
 /// Delegate interface for use with the build system.
 public protocol BuildSystemDelegate {
+    /// Intercept a process for this build system, or return nil to spawn it.
+    /// Called concurrently on Swift tasks; the llbuild execution lane waits.
+    /// Cancellation does not cancel the task: this must eventually return.
+    /// Do not recursively launch llbuild processes from this callback.
+    @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+    func executeProcess(_ request: ProcessExecutionRequest) async -> ProcessExecutionResult?
 
     /// The FileSystem to use, if any.
     ///
@@ -1140,6 +1146,9 @@ public final class BuildSystem {
 
                 // FIXME: should support fs_create_symlink, but for now explicitly defers to built-in symlink
                 _delegate.fs_create_symlink = nil
+            }
+            if #available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *) {
+                _delegate.execute_process = { BuildSystem.toSystem($0!).executeProcess($1!, $2!) }
             }
             _delegate.lookup_tool = { return BuildSystem.toSystem($0!).lookupTool($1!) }
             _delegate.had_command_failure = { BuildSystem.toSystem($0!).hadCommandFailure() }
